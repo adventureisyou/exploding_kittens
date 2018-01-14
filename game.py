@@ -1,5 +1,4 @@
 import random
-from .robotplayer import RobotPlayer
 from .cards import *
 from .actions.action import OptionsList
 from .actions.draw import DrawOptions
@@ -14,7 +13,7 @@ from .actions.playfivedifferentcards import PlayFiveDifferentCardsOptions
 
 
 class Game:
-  def __init__(self, nets):
+  def __init__(self, players):
     # Initial deck, with no defuses or exploding kittens
     deck = ([attack]*4 +
             [beard]*4 +
@@ -29,22 +28,21 @@ class Game:
             [taco]*4)
 
     # Shuffle deck
-    for _ in range(3):
-      random.shuffle(deck)
+    random.shuffle(deck)
 
-    # Declare players with one defuse and 4 random cards.
-    self.players = []
-    for id_, net in enumerate(nets):
-      starting_cards = [defuse] + [deck.pop() for _ in range(4)]
-      self.players.append(RobotPlayer(id_, starting_cards, net))
+    # Give players one defuse and 4 random cards.
+    self.players = players
+    for player in self.players:
+      player.give(defuse)
+      for _ in range(4):
+        player.give(deck.pop())
 
     # Add extra defuses and exploding kittens into the deck.
     deck.extend([exploding]*(len(self.players)-1) +
                 [defuse]*(6-len(self.players)))
 
     # Shuffle deck again
-    for _ in range(3):
-      random.shuffle(deck)
+    random.shuffle(deck)
 
     # Declare draw and discard pile
     self.draw_pile = deck
@@ -115,4 +113,3 @@ class Game:
 
     #print('Player {} is a winrar!'.format(self.players[0].id))
     return self.players[0].id
-
