@@ -22,6 +22,10 @@ class Player:
     self.id = id_
     self.hand = Hand(starting_cards)
 
+  class PublicPlayer:
+    def __init__(self, id_):
+      self.id = id_
+
   def give(self, card):
     self.hand.add(card)
 
